@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+        <meta name="generator" content="Hugo 0.88.1">
+        <title>Checkout example · Bootstrap v5.1</title>
+
+        <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/checkout/">
+
+
+
+        <!-- Bootstrap core CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+
+        </style>
+
+
+        <!-- Custom styles for this template -->
+
+    </head>
+
+    <body class="bg-light">
+
+        <div class="center">
+            <main class="px-3">
+                <h6 id="time"></h6>
+            </main>
+        </div>
+
+        <div class="container">
+            <h1 class="my-4 text-center">To Do List</h1>
+
+            <div class="mb-3">
+                <label for="task" class="form-label">Task</label>
+                <input type="text" class="form-control" id="title" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="Description" class="form-label">Description</label>
+                <textarea class="form-control" placeholder="Write description here" id="Description"
+                    style="height: 100px"></textarea>
+            </div>
+            <button type="submit" id="add" class="btn btn-primary">Add to list</button>
+
+
+
+            <div id="items" class="my-4">
+                <table class="table" id="list">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col">Sr. No.</th>
+                            <th scope="col">Task</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- <tr class="text-center">
+                            <th scope="row">1</th>
+                            <td>Gate Exam Studies</td>
+                            <td>Spend 2 hrs every day for GATE preparation</td>
+                            <td><button class="btn btn-secondary btn-sm">Mark As Done</button></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+        <script>
+            let a;
+            let date;
+            let time;
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            setInterval(() => {
+                a = new Date();
+                date = a.toLocaleDateString(undefined, options);
+                time = a.getHours() + ':' + a.getMinutes() + ':' + a.getSeconds();
+                document.getElementById('time').innerHTML = time + ' on ' + date;
+            }, 1000)
+
+            function getAndUpdate() {
+
+                console.log("listener triggered");
+                tit = document.getElementById('title').value;
+                desc = document.getElementById('Description').value;
+                if (localStorage.getItem('itemsJson') == null) {
+                    itemJsonArray = [];
+                }
+                else {
+                    itemJsonArrayStr = localStorage.getItem('itemsJson');
+                    itemJsonArray = JSON.parse(itemJsonArrayStr);
+
+                }
+                itemJsonArray.push([tit, desc]);
+                localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+                update();
+            }
+
+
+            function update() {
+
+
+                if (localStorage.getItem('itemsJson') == null) {
+                    itemJsonArray = [];
+                    localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+                }
+                else {
+                    itemJsonArrayStr = localStorage.getItem('itemsJson');
+                    itemJsonArray = JSON.parse(itemJsonArrayStr);
+
+                }
+
+                tableBody = document.getElementById("table-body");
+                let str = "";
+                itemJsonArray.forEach((element, index) => {
+                    str += `
+                        <tr class="text-center">
+                            <th scope="row">${index + 1}</th>
+                            <td>${element[0]}</td>
+                            <td>${element[1]}</td>
+                            <td><button class="btn btn-secondary btn-sm" onclick="deleted(${index})">Mark As Done</button></td>
+                        </tr>`;
+                });
+
+                tableBody.innerHTML = str;
+
+            }
+
+            function fieldUpdate() {
+                document.getElementById('title').value = " ";
+                document.getElementById('Description').value = " ";
+            }
+
+
+            add = document.getElementById('add');
+            add.addEventListener("click", getAndUpdate);
+            add.addEventListener("click", fieldUpdate);
+
+            function deleted(itemIndex) {
+                itemJsonArrayStr = localStorage.getItem('itemsJson');
+                itemJsonArray = JSON.parse(itemJsonArrayStr);
+
+                itemJsonArray.splice(itemIndex, 1)
+                localStorage.setItem('itemsJson', JSON.stringify(itemJsonArray));
+                update();
+            }
+            document.onload(localStorage.clear());
+        </script>
+
+    </body>
+
+</html>
